@@ -5,13 +5,16 @@
 
 `timescale 100 ns / 1 ns 
 
-module mux(select, a, b, c, add, sub, f);
-	input [2:0] select;
-	input a, b, c; 
+module mux(a, b, c, add, sub, f);
+	input a, b, c, add, sub; 
 	output reg [7:0] f; 
-	[6:0]
+	
+	integer plus = a + b;
+	integer minus = a - b;
+	integer mult = a * b;
+	integer select;
 
-always@(a or b or select) 
+always@(add or sub) 
 	begin 
 	
 		if(~add && sub)
@@ -23,16 +26,11 @@ always@(a or b or select)
 		else
 			assign select = 0;
 	
-		
-		reg plus = a + b;
-		reg minus = a - b;
-		reg mult = a * b;
-	
 		case(select) 
 			1: f = plus; 
 			2: f = minus; 
 			3: f = mult; 
-			default : f = d;
+			default : f = c;
 		endcase 
 	end 
 endmodule 

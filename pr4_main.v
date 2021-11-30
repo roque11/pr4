@@ -13,8 +13,8 @@ module pr4_main(clk, ar, aInd_in, a0, a1, a2, bInd_in, b0, b1, b2, switchAdd, sw
 	
 	wire a_bin;
 	wire b_bin;
-	wire select;
 	wire [7:0] result;
+	wire [7:0] result1;
 	wire [6:0] binary;
 	wire [6:0] binA;
 	wire [6:0] binB;
@@ -23,16 +23,15 @@ module pr4_main(clk, ar, aInd_in, a0, a1, a2, bInd_in, b0, b1, b2, switchAdd, sw
 	wire [6:0] tens;
 	wire [6:0] ones;
 	
-	reg select;
 	
+	dff_in a_in(.clk(clk), .ar(ar), .dInd(aInd_in), .d0(a0), .d1(a1), .d2(a2), .q(a_bin));
+	dff_in b_in(.clk(clk), .ar(ar), .dInd(bInd_in), .d0(b0), .d1(b1), .d2(b2), .q(b_bin));
 	
+	mux res(.a(a), .b(b), .c(0), .add(switchAdd), .sub(switchSub), .f(result));
 	
-	dff a_in(.clk(clk), .ar(ar), .d(a), .q(a_bin));
-	dff b_in(.clk(clk), .ar(ar), .d(b), .q(b_bin));
+	dff_7(.clk(clk), .ar(ar), .d(result), .q(result1));
 	
-	mux res(.select(select), .a(a), .b(b), .c(0), .add(switchAdd), .sub(switchSub), .f(result);
-	
-	mag resNum(.num(result), .light(reInd), .bin(binary));
+	mag resNum(.num(result1), .light(reInd), .bin(binary));
 	mag aNum(.num(a_bin), .light(aInd_out), .bin(binA));
 	mag bNum(.num(b_bin), .light(bInd_out), .bin(binB));
 	

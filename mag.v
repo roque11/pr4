@@ -7,7 +7,7 @@
 
 module mag(num, light, bin);
 	input [7:0] num;
-	output light;
+	output reg light;
 	output reg [6:0] bin;
 	
 	always @ (num)

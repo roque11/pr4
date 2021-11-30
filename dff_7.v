@@ -5,10 +5,10 @@
 
 module dff_7(clk, ar, d, q);
 	input clk, ar;
-	input [7:0];
+	input [7:0] d;
 	output reg [7:0] q;
 		
-	always @(posedge clk or ar)
+	always @(posedge clk or negedge ar)
 		begin	
 			if(~ar)
 				begin	
