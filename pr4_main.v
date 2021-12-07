@@ -6,94 +6,35 @@
 
 `timescale 1 ns / 1 ns
 
-module pr4_main(clk, ar, aSign, a0, a1, a2, bSign, b0, b1, b2, switchAdd, switchSub, vga, ansSign_out, aSign_out, bSign_out, tens_out, ones_out, a_out, b_out);
+module pr4_main(clk, ar, a, b, select, vga, ansSign_out, aSign_out, bSign_out, tens_out, ones_out, a_out, b_out);
 	
-	input clk, ar, aSign, a0, a1, a2, bSign, b0, b1, b2, switchAdd, switchSub, newLine, vga;
+	input clk, ar, vga;
+	input [1:0] select;
+	input [3:0] a, b;
 	
-	output ansSign_out, 
-	output reg aSign_out, 
-	output reg bSign_out;
+	output reg ansSign_out;
+	output aSign_out;
+	output bSign_out;
 	output [6:0] tens_out, ones_out, a_out, b_out;
 	
+	
+
+	wire [6:0] tens, ones, a1, b1;
 	wire mode;
-	wire [3:0] a_in, b_in;
+	wire [6:0] alu, intA, intB;
 	
-	reg signed [7:0] a_ext, b_ext;
+	alu calc(.clk(clk), .ar(ar), .a(a), .b(b), .mode(select), .sign(ansSign), .signA(aSign_out), .signB(bSign_out), .f_out(alu), .a_out(intA), .b_out(intB));
 	
-	wire ansSign;
-	wire tens;
-	wire ones;
-	wire a_int;
-	wire b_int;
-	
-	
-	
-	always @ (posedge clk)
-		if(switchAdd)
-			mode = 2'b00;
-		else if(switchSub)
-			mode = 2'b01;
-		else
-			mode = 2'b11;
-	end
-	
-	always @ (posedge clk)
-		if(a0)
-			a_in[1] = 1;
-		else
-			a_in[1] = 0;
-		if(a1)
-			a_in[2] = 1;
-		else
-			a_in[2] = 0;
-		if(a2)
-			a_in[3] = 1;
-		else
-			a_in[3] = 0;
-		
-		if(b0)
-			b_in[1] = 1;
-		else
-			b_in[1] = 0;
-		if(b1)
-			b_in[2] = 1;
-		else
-			b_in[2] = 0;
-		if(b2)
-			b_in[3] = 1;
-		else
-			b_in[3] = 0;
-		if(aSign)
-			begin
-			a_in[0] = 1;
-			a_ext = ~a_in + 1'b1;
-			aSign_out = 1;
-			end
-		else
-			begin
-			a_in[0] = 0;
-			aSign_out = 0
-			end
-		if(bSign)
-			b_in[0] = 1;
-			b_ext = ~b_in + 1'b1;
-			bSign_out = 1;
-		else
-			b_in[0] = 0;
-			bSign_out = 0;
-	end
-	
-	
-	alu calc(.clk(clk), .ar(ar), .a(a_in), .b(b_in), .mode(mode), .sign(ansSign), .disp_int_tens(tens), .disp_int_ones(ones))
+	bin2bcd dec(.binary(alu), .hundreds(), .tens(tens), .ones(ones));
+	bin2bcd dec1(.binary(intA), .hundreds(), .tens(), .ones(a1));
+	bin2bcd dec2(.binary(intB), .hundreds(), .tens(), .ones(b1));
+
 	
 	sev_seg_decoder ten(.x_in(tens), .segs(tens_out));
 	sev_seg_decoder one(.x_in(ones), .segs(ones_out));
 	
-	bin2bcd aDec(.binary(a_ext), .tens(), .ones(a_int));
-	bin2bcd bDec(.binary(b_ext), .tens(), .ones(b_int));
-	
-	sev_seg_decoder ten(.x_in(tens), .segs(a_out));
-	sev_seg_decoder one(.x_in(ones), .segs(b_out));	
+	sev_seg_decoder Tens(.x_in(a1), .segs(a_out));
+	sev_seg_decoder Ones(.x_in(b1), .segs(b_out));
 	
 	
 	
