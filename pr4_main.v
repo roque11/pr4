@@ -12,7 +12,7 @@ module pr4_main(clk, ar, a, b, select, vga, ansSign_out, aSign_out, bSign_out, t
 	input [1:0] select;
 	input [3:0] a, b;
 	
-	output reg ansSign_out;
+	output ansSign_out;
 	output aSign_out;
 	output bSign_out;
 	output [6:0] tens_out, ones_out, a_out, b_out;
@@ -23,7 +23,7 @@ module pr4_main(clk, ar, a, b, select, vga, ansSign_out, aSign_out, bSign_out, t
 	wire mode;
 	wire [6:0] alu, intA, intB;
 	
-	alu calc(.clk(clk), .ar(ar), .a(a), .b(b), .mode(select), .sign(ansSign), .signA(aSign_out), .signB(bSign_out), .f_out(alu), .a_out(intA), .b_out(intB));
+	alu calc(.clk(clk), .ar(ar), .a(a), .b(b), .mode(select), .sign(ansSign_out), .signA(aSign_out), .signB(bSign_out), .f_out(alu), .a_out(intA), .b_out(intB));
 	
 	bin2bcd dec(.binary(alu), .hundreds(), .tens(tens), .ones(ones));
 	bin2bcd dec1(.binary(intA), .hundreds(), .tens(), .ones(a1));
